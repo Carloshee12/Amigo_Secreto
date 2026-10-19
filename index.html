@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Amigo Secreto de Natal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;600;700&display=swap">
+<style>
+/* Layout: uma coluna estreita, cartão central; modo organizador e modo revelação */
+:root{
+  --bg:#F3F6F2; --surface:#FFFFFF; --fg:#1B2A22; --muted:#5E6E64; --line:#D9E2DB;
+  --pine:#1F5A40; --berry:#B3263E; --berry-ink:#FFFFFF; --gold:#C8962E; --ok:#1F7A4D; --warn:#A33A2A;
+  --display:"Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F1A15; --surface:#16251D; --fg:#E8EFEA; --muted:#9AAEA2; --line:#2A3D32;
+  --pine:#6CC59A; --berry:#E2566E; --berry-ink:#1A0B0F; --gold:#E2B755; --ok:#6CC59A; --warn:#F08A78; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1A15; --surface:#16251D; --fg:#E8EFEA; --muted:#9AAEA2; --line:#2A3D32;
+  --pine:#6CC59A; --berry:#E2566E; --berry-ink:#1A0B0F; --gold:#E2B755; --ok:#6CC59A; --warn:#F08A78; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 48px}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1,h2{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.1}
+h1{font-size:clamp(30px,7vw,42px);font-weight:800;color:var(--pine)}
+h2{font-size:20px;font-weight:800}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--berry);font-weight:700}
+.lead{color:var(--muted);margin:6px 0 0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+label{font-weight:600;font-size:14px;display:block;margin-bottom:6px}
+.hint{font-weight:400;color:var(--muted)}
+input,textarea{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:11px 12px}
+textarea{min-height:190px;resize:vertical}
+input:focus,textarea:focus,button:focus-visible,a:focus-visible{outline:3px solid color-mix(in srgb,var(--berry) 45%,transparent);outline-offset:2px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:440px){.row{grid-template-columns:1fr}}
+button,.btn{font:inherit;font-weight:700;border:0;border-radius:10px;padding:12px 16px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.primary{background:var(--berry);color:var(--berry-ink);font-size:17px;padding:14px 18px}
+.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.wa{background:var(--pine);color:var(--surface)}
+.small{font-size:14px;padding:9px 12px}
+.count{font-size:14px;color:var(--muted)}
+.err{color:var(--warn);font-weight:600;font-size:14px;margin:0}
+ul.people{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+ul.people li{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+ul.people li:first-child{border-top:0}
+.who{flex:1 1 140px;min-width:0;font-weight:600;overflow-wrap:anywhere}
+.sent{font-size:12px;font-weight:700;color:var(--ok);letter-spacing:.04em;text-transform:uppercase}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.steps{margin:0;padding-left:20px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+.steps b{color:var(--fg)}
+.confirm{background:color-mix(in srgb,var(--warn) 10%,var(--surface));border:1px solid color-mix(in srgb,var(--warn) 35%,var(--line));border-radius:10px;padding:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.confirm p{margin:0;flex:1 1 200px}
+/* Revelação */
+.reveal{text-align:center;align-items:center;padding:32px 20px}
+.gift{width:132px;height:132px;position:relative;margin:8px auto 4px;cursor:pointer;border:0;background:none;padding:0}
+.gift .box{position:absolute;left:14px;right:14px;bottom:6px;height:78px;background:var(--berry);border-radius:8px}
+.gift .lid{position:absolute;left:6px;right:6px;top:30px;height:26px;background:var(--berry);border-radius:6px;filter:brightness(1.08);transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+.gift .rib-v{position:absolute;left:50%;width:16px;margin-left:-8px;top:30px;bottom:6px;background:var(--gold)}
+.gift .bow{position:absolute;left:50%;top:6px;width:52px;height:28px;margin-left:-26px}
+.gift .bow::before,.gift .bow::after{content:"";position:absolute;top:0;width:26px;height:24px;border:6px solid var(--gold);border-radius:50% 50% 50% 50%}
+.gift .bow::before{left:-2px;transform:rotate(-20deg)} .gift .bow::after{right:-2px;transform:rotate(20deg)}
+.gift.open .lid,.gift.open .bow{transform:translateY(-34px) rotate(-12deg)}
+.gift .bow{transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+.name{font-family:var(--display);font-weight:800;font-size:clamp(34px,10vw,54px);color:var(--pine);line-height:1.05;overflow-wrap:anywhere}
+.result[hidden]{display:none}
+.result{display:flex;flex-direction:column;gap:8px;animation:rise .6s ease both}
+@keyframes rise{from{opacity:.0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.meta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+.chip{border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:14px;color:var(--muted)}
+.chip b{color:var(--fg)}
+.foot{font-size:13px;color:var(--muted);text-align:center}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap" id="app"></div>
+
+<script>
+const BASE_URL = ""; // link público desta página (preenchido na publicação)
+const KEY = "natal-amigo-secreto";
+const $ = (s, r=document) => r.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+function encode(obj){
+  const bytes = new TextEncoder().encode(JSON.stringify(obj));
+  const k = new TextEncoder().encode(KEY);
+  let bin = "";
+  bytes.forEach((b,i)=>{ bin += String.fromCharCode(b ^ k[i % k.length]); });
+  return btoa(bin).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+}
+function decode(tok){
+  let b64 = tok.replace(/-/g,"+").replace(/_/g,"/");
+  while (b64.length % 4) b64 += "=";
+  const bin = atob(b64), k = new TextEncoder().encode(KEY);
+  const bytes = Uint8Array.from(bin, (c,i)=> c.charCodeAt(0) ^ k[i % k.length]);
+  return JSON.parse(new TextDecoder().decode(bytes));
+}
+function shuffle(a){
+  const arr = a.slice(), rnd = new Uint32Array(arr.length);
+  crypto.getRandomValues(rnd);
+  for (let i = arr.length - 1; i > 0; i--){ const j = rnd[i] % (i + 1); [arr[i], arr[j]] = [arr[j], arr[i]]; }
+  return arr;
+}
+function load(){ try { return JSON.parse(localStorage.getItem("as-state")) || null; } catch(e){ return null; } }
+function save(s){ try { localStorage.setItem("as-state", JSON.stringify(s)); } catch(e){} }
+function baseUrl(){ return (BASE_URL || location.href).split("#")[0]; }
+
+/* ---------- Revelação ---------- */
+function renderReveal(data){
+  document.title = "Seu amigo secreto";
+  $("#app").innerHTML = `
+    <div class="card reveal">
+      <span class="eyebrow">${esc(data.e || "Amigo secreto")}</span>
+      <h1>Olá, ${esc(data.g)}!</h1>
+      <p class="lead" id="cta">Toque no presente para descobrir quem você tirou.</p>
+      <button class="gift" id="gift" aria-label="Abrir presente">
+        <span class="box"></span><span class="rib-v"></span><span class="lid"></span><span class="bow"></span>
+      </button>
+      <div class="result" id="result" hidden>
+        <span class="eyebrow">Seu amigo secreto é</span>
+        <div class="name">${esc(data.a)}</div>
+        <div class="meta">
+          ${data.d ? `<span class="chip">Troca: <b>${esc(data.d)}</b></span>` : ""}
+          ${data.v ? `<span class="chip">Valor: <b>${esc(data.v)}</b></span>` : ""}
+        </div>
+      </div>
+      <button class="primary" id="open">Descobrir meu amigo secreto</button>
+    </div>
+    <p class="foot">Guarde segredo! Você pode abrir este link de novo quando quiser.</p>`;
+  const open = () => {
+    $("#gift").classList.add("open");
+    $("#open").hidden = true; $("#cta").hidden = true;
+    setTimeout(()=>{ $("#result").hidden = false; }, 350);
+  };
+  $("#gift").onclick = open; $("#open").onclick = open;
+}
+
+/* ---------- Organizador ---------- */
+const EXAMPLE = "Ana\nBruno\nCarla\nDiego\nFernanda\nGabriel";
+function renderSetup(prev){
+  const p = prev || {};
+  $("#app").innerHTML = `
+    <header>
+      <span class="eyebrow">Sorteio sem cadastro</span>
+      <h1>Amigo Secreto de Natal</h1>
+      <p class="lead">Digite os nomes, clique em sortear e mande para cada pessoa o link dela pelo WhatsApp. Ninguém precisa de login, nem você vê o resultado.</p>
+    </header>
+    <form class="card" id="form" novalidate>
+      <div>
+        <label for="names">Participantes <span class="hint">· um nome por linha</span></label>
+        <textarea id="names" placeholder="${EXAMPLE}">${esc(p.names || "")}</textarea>
+        <div class="count" id="count"></div>
+      </div>
+      <div>
+        <label for="event">Nome do grupo <span class="hint">· opcional</span></label>
+        <input id="event" placeholder="Natal da família 2026" value="${esc(p.e || "")}">
+      </div>
+      <div class="row">
+        <div><label for="date">Data da troca <span class="hint">· opcional</span></label>
+          <input id="date" placeholder="24/12 às 20h" value="${esc(p.d || "")}"></div>
+        <div><label for="value">Valor do presente <span class="hint">· opcional</span></label>
+          <input id="value" placeholder="Até R$ 100" value="${esc(p.v || "")}"></div>
+      </div>
+      <p class="err" id="err" hidden></p>
+      <button class="primary" type="submit">Sortear</button>
+    </form>`;
+  const ta = $("#names");
+  const upd = () => { const n = parseNames(ta.value).length; $("#count").textContent = n ? `${n} participante${n>1?"s":""}` : "Mínimo de 3 participantes"; };
+  ta.addEventListener("input", upd); upd();
+  $("#form").addEventListener("submit", ev => {
+    ev.preventDefault();
+    const names = parseNames(ta.value), err = $("#err");
+    const lower = names.map(n => n.toLocaleLowerCase("pt-BR"));
+    const dup = names.find((n,i) => lower.indexOf(lower[i]) !== i);
+    err.hidden = true;
+    if (names.length < 3){ err.textContent = "Coloque pelo menos 3 nomes, um em cada linha."; err.hidden = false; return; }
+    if (dup){ err.textContent = `O nome "${dup}" aparece duas vezes. Use sobrenome ou apelido para diferenciar.`; err.hidden = false; return; }
+    const order = shuffle(names);
+    const pairs = {};
+    order.forEach((g,i) => { pairs[g] = order[(i+1) % order.length]; });
+    const state = { names: ta.value, e: $("#event").value.trim(), d: $("#date").value.trim(), v: $("#value").value.trim(),
+      list: names.map(g => ({ g, t: encode({ g, a: pairs[g], e: $("#event").value.trim(), d: $("#date").value.trim(), v: $("#value").value.trim() }), sent: false })) };
+    save(state); renderSend(state);
+  });
+}
+function parseNames(t){ return t.split(/\n|,|;/).map(s => s.trim().replace(/\s+/g," ")).filter(Boolean); }
+
+function linkFor(item){ return `${baseUrl()}#s.${item.t}`; }
+function msgFor(item, s){
+  return `Olá, ${item.g}! O sorteio do amigo secreto${s.e ? " ("+s.e+")" : ""} foi feito.\n\nAbra o seu link para descobrir quem você tirou (é só tocar, não precisa de cadastro):\n${linkFor(item)}\n\nNão mostre para ninguém!`;
+}
+function renderSend(s){
+  const sentN = s.list.filter(x => x.sent).length;
+  $("#app").innerHTML = `
+    <header>
+      <span class="eyebrow">Sorteio feito · ${s.list.length} pessoas</span>
+      <h1>Agora envie os links</h1>
+      <p class="lead">Cada link mostra só o amigo secreto daquela pessoa. O resultado fica escondido, então você também pode participar.</p>
+    </header>
+    <ol class="steps">
+      <li>Toque em <b>WhatsApp</b> ao lado do nome e escolha o contato da pessoa.</li>
+      <li>Ou toque em <b>Copiar</b> e cole a mensagem onde preferir.</li>
+      <li>A pessoa abre o link e toca no presente. Pronto.</li>
+    </ol>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <h2>Participantes</h2><span class="count">${sentN} de ${s.list.length} enviados</span>
+      </div>
+      <ul class="people">
+        ${s.list.map((x,i) => `
+          <li>
+            <span class="who">${esc(x.g)} ${x.sent ? '<span class="sent">· enviado</span>' : ""}</span>
+            <span class="acts">
+              <a class="btn wa small" target="_blank" rel="noopener" data-i="${i}" href="https://wa.me/?text=${encodeURIComponent(msgFor(x, s))}">WhatsApp</a>
+              <button class="ghost small" data-copy="${i}" type="button">Copiar</button>
+            </span>
+          </li>`).join("")}
+      </ul>
+    </div>
+    <div id="redo-area">
+      <button class="ghost" id="redo" type="button">Refazer sorteio</button>
+    </div>`;
+  $("#app").querySelectorAll("a[data-i]").forEach(a => a.addEventListener("click", () => {
+    s.list[+a.dataset.i].sent = true; save(s); setTimeout(() => renderSend(s), 400);
+  }));
+  $("#app").querySelectorAll("button[data-copy]").forEach(b => b.addEventListener("click", () => {
+    const item = s.list[+b.dataset.copy], text = msgFor(item, s);
+    const done = () => { b.textContent = "Copiado"; item.sent = true; save(s); setTimeout(() => renderSend(s), 900); };
+    navigator.clipboard.writeText(text).then(done).catch(() => {
+      const ta = document.createElement("textarea"); ta.value = text; b.parentElement.after(ta); ta.select();
+      b.textContent = "Selecione e copie";
+    });
+  }));
+  $("#redo").onclick = () => {
+    $("#redo-area").innerHTML = `<div class="confirm"><p>Um novo sorteio invalida os links já enviados. Continuar?</p>
+      <button class="ghost small" id="no" type="button">Cancelar</button><button class="primary small" id="yes" type="button">Sim, refazer</button></div>`;
+    $("#no").onclick = () => renderSend(s);
+    $("#yes").onclick = () => { save(null); renderSetup({ names: s.names, e: s.e, d: s.d, v: s.v }); };
+  };
+}
+
+/* ---------- Início ---------- */
+const h = location.hash.slice(1);
+if (h.startsWith("s.")){
+  try { renderReveal(decode(h.slice(2))); }
+  catch(e){ $("#app").innerHTML = `<div class="card reveal"><h1>Link incompleto</h1><p class="lead">Este link parece cortado. Peça para quem organizou enviar de novo.</p></div>`; }
+} else {
+  const st = load();
+  if (st && st.list) renderSend(st); else renderSetup();
+}
+</script>
+
+</body>
+</html>
